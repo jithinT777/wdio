@@ -37,7 +37,7 @@ class LoginPage extends Page {
         await buyButton.waitForExist({ timeout: 5000 });
         let price = $('(//*[contains(text(),"₹")])[1]');
         let priceText = await price.getText();
-        console.log("Price of the product is: " + priceText + " rupees only !!!!");
+        console.log("Price of the product is: " + priceText);
     }
 
     public async comparePrice () {
