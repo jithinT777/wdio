@@ -29,7 +29,7 @@ When(/^get the price of the product$/, async () => {
 });
 
 Given(/^compare price to price History app$/, async () => {
-    await browser.url(`https://pricehistoryapp.com/product/apple-iphone-16-pink-128-gb`);
+    await browser.url(`https://pricehistoryapp.com/`);
     await LoginPage.comparePrice();
 
 });
@@ -37,5 +37,9 @@ Given(/^compare price to price History app$/, async () => {
 Then(/^I should see a flash message saying (.*)$/, async (message) => {
     await expect(SecurePage.flashAlert).toBeExisting();
     await expect(SecurePage.flashAlert).toHaveText(expect.stringContaining(message));
+});
+
+Then(/^I perform action set (.*)$/, async () => {
+    await LoginPage.performActionSet1();
 });
 

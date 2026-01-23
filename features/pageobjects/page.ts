@@ -14,6 +14,6 @@ export default class Page {
     }
 
     public open () {
-        return browser.url(`https://flipkart.com/`)
+        console.log("Opening Login page");
     }
 }

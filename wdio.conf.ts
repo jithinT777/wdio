@@ -62,7 +62,7 @@ export const config: WebdriverIO.Config = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'info',
+    logLevel: 'silent',
     //
     // Set specific log levels per logger
     // loggers:
@@ -125,7 +125,14 @@ export const config: WebdriverIO.Config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
+    reporters: [
+    'spec',
+    ['allure', {
+        outputDir: 'allure-results', // Directory where results will be stored
+        disableWebdriverStepsReporting: true, // Optional: Disable WebDriver commands in the report
+        disableWebdriverScreenshotsReporting: false, // Optional: Include screenshots in the report
+    }],
+],
 
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
@@ -224,8 +231,10 @@ export const config: WebdriverIO.Config = {
      * @param {string}                   uri      path to feature file
      * @param {GherkinDocument.IFeature} feature  Cucumber feature object
      */
-    // beforeFeature: function (uri, feature) {
-    // },
+     beforeFeature: function () {
+        browser.maximizeWindow();
+        return browser.url(`https://flipkart.com/`)
+    },
     /**
      *
      * Runs before a Cucumber Scenario.
@@ -311,8 +320,20 @@ export const config: WebdriverIO.Config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    // onComplete: function(exitCode, config, capabilities, results) {
-    // },
+onComplete: async function () {
+    const { exec } = require('child_process');
+    exec('allure generate allure-results --clean -o allure-report', (error: Error | null, stdout: string, stderr: string) => {
+        if (error) {
+            console.error(`Error generating Allure report: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.error(`Allure report generation stderr: ${stderr}`);
+            return;
+        }
+        console.log(`Allure report generated successfully:\n${stdout}`);
+    });
+},
     /**
     * Gets executed when a refresh happens.
     * @param {string} oldSessionId session ID of the old session
